@@ -36,13 +36,16 @@
       </div>
     </div>
     <div class="timer">
-      <h3 id="timer-label">{{ counterStore.state }}</h3>
-      <h1 id="time-left"> {{ addZero(counterStore.session) }}:{{ addZero(counterStore.minute) }} </h1>
+      <h3 id="timer-label" :style="{ color: updateColor }">{{ counterStore.state }}</h3>
+      <h1 id="time-left" :style="{ color: updateColor }"> {{ counterStore.addZero(counterStore.session) }}:{{
+        counterStore.addZero(counterStore.minute)
+        }} </h1>
     </div>
     <div class="timer-controls">
       <div class="play-stop">
-        <i class="fa-solid fa-play fa-2x"></i>
-        <i class="fa-solid fa-pause fa-2x"></i>
+        <AudioElement/>
+        <i class="fa-solid fa-play fa-2x" @click="counterStore.playBtn"></i>
+        <i class="fa-solid fa-pause fa-2x" @click="counterStore.playBtn"></i>
       </div>
       <i class="fa-solid fa-rotate fa-2x" @click="counterStore.reset"></i>
     </div>
@@ -51,7 +54,9 @@
     <CoderDetail />
   </footer>
 </template>
+
 <script>
+import AudioElement from "@/components/AudioElement.vue";
 import CoderDetail from "@/components/CoderDetail.vue";
 import { useCounterStore } from "@/store";
 export default {
@@ -61,11 +66,12 @@ export default {
     };
   },
   components: {
-    CoderDetail
+    CoderDetail,
+    AudioElement
   },
-  methods: {
-    addZero(num) {
-      return num < 10 ? "0" + num : num
+  computed: {
+    updateColor() {
+      return this.counterStore.time > 0 && this.counterStore.time < 60 ? "red" : "white";
     }
   },
 };
