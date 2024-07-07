@@ -7,7 +7,7 @@
 </template>
 <style>
 .coder {
-    color: #A50D2C;
+    color: red;
     display: flex;
     justify-content: center;
     align-items: center;
