@@ -1,4 +1,5 @@
 import { defineStore } from "pinia";
+
 export const useCounterStore = defineStore("counter", {
   state: () => ({
     break: 5,
@@ -7,7 +8,7 @@ export const useCounterStore = defineStore("counter", {
     state: "Session",
     time: 0,
     timerInterval: null,
-    shouldPlayAudio: false, // New flag to control audio playback
+    isPlaying: false, // Add a flag to track playing state
   }),
   getters: {},
   actions: {
@@ -29,31 +30,53 @@ export const useCounterStore = defineStore("counter", {
       this.state = "Session";
       clearInterval(this.timerInterval);
       this.updateDisplay();
+      this.isPlaying = false; // Reset playing state
     },
     addZero(num) {
       return num < 10 ? "0" + num : num;
     },
     playBtn() {
       const displayTime = document.getElementById("time-left");
-      clearInterval(this.timerInterval);
-      this.time = (this.state === "Session" ? this.session : this.break) * 60;
-      this.shouldPlayAudio = true; // Set flag before toggleState
-      const updateTime = () => {
-        let min = Math.floor(this.time / 60);
-        let sec = this.time % 60;
-        displayTime.textContent = `${this.addZero(min)}:${this.addZero(sec)}`;
-        this.time--;
-        if (this.time < 0) {
-          this.toggleState();
-          if (this.shouldPlayAudio) { // Play audio only if flag is true
-            const audioElement = document.getElementById("audioElement")
-            audioElement.play();
-            this.shouldPlayAudio = false; // Reset flag after playing
-          }
+      const audioElement = document.getElementById("audioElement");
+
+      if (!this.isPlaying) { // Check if timer is not playing
+        this.isPlaying = true; // Set playing state to true
+
+        if (!this.timerInterval) { // Check if interval is not already set
+          this.time = (this.state === "Session" ? this.session : this.break) * 60;
+
+          const updateTime = () => {
+            let min = Math.floor(this.time / 60);
+            let sec = this.time % 60;
+            displayTime.textContent = `${this.addZero(min)}:${this.addZero(sec)}`;
+            this.time--;
+
+            if (this.time < 0) {
+              audioElement.play();
+              this.toggleState();
+            }
+          };
+
+          this.timerInterval = setInterval(updateTime, 1000);
+          updateTime();
+        } else{
+          const updateTime = () => {
+            let min = Math.floor(this.time / 60);
+            let sec = this.time % 60;
+            displayTime.textContent = `${this.addZero(min)}:${this.addZero(sec)}`;
+            this.time--;
+
+            if (this.time < 0) {
+              audioElement.play();
+              this.toggleState();
+            }
+          };
+          this.timerInterval = setInterval(updateTime, 1000);
         }
-      };
-      this.timerInterval = setInterval(updateTime, 1000);
-      updateTime();
+      } else {
+        clearInterval(this.timerInterval); // Pause the timer
+        this.isPlaying = false; // Set playing state to false
+      }
     },
     toggleState() {
       if (this.state === "Session") {
