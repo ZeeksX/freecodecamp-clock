@@ -107,3 +107,32 @@ body {
 footer {
     font-family: "Share Tech Mono", monospace;
 }
+@media only screen and (min-width: 180px){
+    #break-label, #break-length, #session-label, #session-length{
+        font-size: 20px;
+        text-align: center;
+    }
+    .fa-2x{
+        font-size: 20px;
+    }
+    #main-title{
+        font-size: 40px;
+    }
+    .timer{
+        width: 80%;
+    }
+}
+@media only screen and (min-width: 425px){
+    #break-label, #break-length, #session-label, #session-length{
+        font-size: 30px;
+    }
+    .fa-2x{
+        font-size: 1.8rem;
+    }
+    #main-title{
+        font-size: 50px;
+    }
+    .timer{
+        width: 100%;
+    }
+}
